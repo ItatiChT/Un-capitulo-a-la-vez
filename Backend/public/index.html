@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Un capítulo a la vez</title>
+    <style>
+        :root {
+            --cafe-oscuro: #5D4037;
+            --cafe-medio: #8D6E63;
+            --beige: #F5F5DC;
+            --crema: #FFF8E1;
+            --sepia: #D7CCC8;
+            --rojo-suave: #e57373;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background-color: var(--beige);
+            color: var(--cafe-oscuro);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background: var(--crema);
+            max-width: 650px;
+            width: 100%;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(93, 64, 55, 0.2);
+            border: 1px solid var(--sepia);
+        }
+
+        h1 { text-align: center; border-bottom: 2px solid var(--cafe-medio); padding-bottom: 10px; margin-bottom: 30px; }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid var(--sepia);
+            border-radius: 8px;
+            background-color: #fff;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            font-family: inherit;
+        }
+
+        .btn-main { background: var(--cafe-oscuro); color: var(--beige); width: 100%; margin-top: 10px; }
+        .btn-main:hover { background: var(--cafe-medio); }
+        
+        .btn-danger { background: var(--rojo-suave); color: white; font-size: 0.8rem; }
+        .btn-status { background: var(--sepia); color: var(--cafe-oscuro); font-size: 0.8rem; }
+
+        .card {
+            background: #fff;
+            border-left: 6px solid var(--cafe-oscuro);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .status-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .pending { background: #FFE0B2; color: #E65100; }
+        .read { background: #C8E6C9; color: #2E7D32; }
+
+        .info-relevancia { font-size: 0.95rem; margin-top: 10px; color: #333; font-weight: bold; }
+        .nota-texto { font-style: italic; color: var(--cafe-medio); background: #fafafa; padding: 8px; border-radius: 5px; margin-top: 8px; font-size: 0.9rem; }
+        
+        .footer-link { text-align: center; margin-top: 20px; }
+        a { color: var(--cafe-oscuro); font-weight: bold; cursor: pointer; text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📖 Un capítulo a la vez</h1>
+
+    <div id="auth-section">
+        <h3>Iniciar Sesión</h3>
+        <input type="text" id="user" placeholder="Usuario">
+        <input type="password" id="pass" placeholder="Contraseña">
+        <button class="btn-main" onclick="login()">Entrar al estudio</button>
+        <div class="footer-link">¿No tienes cuenta? <a onclick="toggleAuth(true)">Regístrate aquí</a></div>
+    </div>
+
+    <div id="register-section" style="display:none;">
+        <h3>Crear Nueva Cuenta</h3>
+        <input type="text" id="reg-user" placeholder="Escribe un usuario">
+        <input type="password" id="reg-pass" placeholder="Escribe una contraseña">
+        <button class="btn-main" onclick="registrar()">Comenzar mi biblioteca</button>
+        <div class="footer-link"><a onclick="toggleAuth(false)">Volver al inicio de sesión</a></div>
+    </div>
+
+    <div id="main-section" style="display:none;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin: 0;">Mi Biblioteca</h3>
+            <button onclick="location.reload()" style="background:none; color:var(--rojo-suave); text-decoration:underline; font-size:0.9rem; padding:0;">Cerrar Sesión</button>
+        </div>
+        
+        <div id="lista-lecturas" style="margin-top: 20px;"></div>
+
+        <div style="margin-top: 40px; border-top: 2px dashed var(--sepia); padding-top: 20px;">
+            <h4>📝 Añadir nuevo material</h4>
+            <input type="text" id="titulo" placeholder="Título del libro o paper">
+            <input type="text" id="autor" placeholder="Autor / Investigador">
+            <input type="text" id="relevance" placeholder="Importancia (Ej: Marco teórico, autor clave...)">
+            <input type="text" id="notas" placeholder="Tus notas o comentarios rápidos">
+            <button class="btn-main" onclick="agregar()">Guardar en mi lista</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let TOKEN = "";
+
+    function toggleAuth(showReg) {
+        document.getElementById('auth-section').style.display = showReg ? 'none' : 'block';
+        document.getElementById('register-section').style.display = showReg ? 'block' : 'none';
+    }
+
+    async function registrar() {
+        const username = document.getElementById('reg-user').value;
+        const password = document.getElementById('reg-pass').value;
+        const res = await fetch('/users/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        if (res.ok) { 
+            alert("¡Usuario registrado! Ahora puedes iniciar sesión."); 
+            toggleAuth(false); 
+        } else {
+            alert("Error al registrar. Intenta con otro nombre.");
+        }
+    }
+
+    async function login() {
+        const username = document.getElementById('user').value;
+        const password = document.getElementById('pass').value;
+        const res = await fetch('/users/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+        if (data.token) {
+            TOKEN = data.token;
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('main-section').style.display = 'block';
+            cargarLecturas();
+        } else { 
+            alert(data.message || "Usuario o contraseña incorrectos"); 
+        }
+    }
+
+    async function cargarLecturas() {
+        const res = await fetch('/items', { 
+            headers: { 'Authorization': `Bearer ${TOKEN}` } 
+        });
+        const lecturas = await res.json();
+        const lista = document.getElementById('lista-lecturas');
+        
+        lista.innerHTML = lecturas.length === 0 ? '<p style="text-align:center; opacity:0.6;">Tu estantería está vacía. ¡Agrega tu primer libro!</p>' : 
+            lecturas.map(l => `
+                <div class="card">
+                    <span class="status-tag ${l.status}">${l.status === 'pending' ? 'Pendiente' : 'Leído'}</span>
+                    <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 5px;">${l.title}</div>
+                    <div style="color: var(--cafe-medio); margin-bottom: 10px;">${l.author}</div>
+                    
+                    <div class="info-relevancia">📌 Por qué leerlo:</div>
+                    <div style="font-size: 0.95rem;">${l.relevance || 'No especificado'}</div>
+                    
+                    <div class="nota-texto">
+                        ${l.notes ? '<b>Nota:</b> ' + l.notes : '<i>Sin notas guardadas.</i>'}
+                    </div>
+
+                    <div style="margin-top: 15px; display: flex; gap: 10px;">
+                        <button class="btn-status" onclick="cambiarEstado('${l.id}', '${l.status}')">
+                            ${l.status === 'pending' ? 'Marcar como Leído' : 'Volver a Pendiente'}
+                        </button>
+                        <button class="btn-danger" onclick="borrar('${l.id}')">Eliminar</button>
+                        <button class="btn-status" style="background: var(--cafe-medio); color: white;" 
+                      onclick="editarLibro('${l.id}', '${l.title}', '${l.author}', '${l.notes}', '${l.relevance}')">
+    Editar Texto
+</button>
+                    </div>
+                </div>
+            `).join('');
+    }
+
+    async function agregar() {
+        const title = document.getElementById('titulo').value;
+        const author = document.getElementById('autor').value;
+        const relevance = document.getElementById('relevance').value;
+        const notes = document.getElementById('notas').value;
+
+        if(!title || !author) return alert("El título y el autor son obligatorios.");
+
+        await fetch('/items', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json', 
+                'Authorization': `Bearer ${TOKEN}` 
+            },
+            body: JSON.stringify({ title, author, relevance, notes })
+        });
+        
+        // Limpiar campos y refrescar
+        document.getElementById('titulo').value = "";
+        document.getElementById('autor').value = "";
+        document.getElementById('relevance').value = "";
+        document.getElementById('notas').value = "";
+        cargarLecturas();
+    }
+
+    async function cambiarEstado(id, estadoActual) {
+        const nuevoEstado = estadoActual === 'pending' ? 'read' : 'pending';
+        await fetch(`/items/${id}`, {
+            method: 'PUT',
+            headers: { 
+                'Content-Type': 'application/json', 
+                'Authorization': `Bearer ${TOKEN}` 
+            },
+            body: JSON.stringify({ status: nuevoEstado })
+        });
+        cargarLecturas();
+    }
+async function editarLibro(id, tituloActual, autorActual, notasActuales, relevanciaActual) {
+    // Usamos prompts simples para pedir los nuevos datos
+    const nuevoTitulo = prompt("Editar Título:", tituloActual);
+    const nuevoAutor = prompt("Editar Autor:", autorActual);
+    const nuevaRelevancia = prompt("Editar Importancia:", relevanciaActual);
+    const nuevasNotas = prompt("Editar Notas:", notasActuales);
+
+    // Si el usuario cancela o deja vacío el título/autor, no hacemos nada
+    if (!nuevoTitulo || !nuevoAutor) return;
+
+    await fetch(`/items/${id}`, {
+        method: 'PUT',
+        headers: { 
+            'Content-Type': 'application/json', 
+            'Authorization': `Bearer ${TOKEN}` 
+        },
+        body: JSON.stringify({ 
+            title: nuevoTitulo, 
+            author: nuevoAutor, 
+            relevance: nuevaRelevancia, 
+            notes: nuevasNotas 
+        })
+    });
+    cargarLecturas(); // Refrescamos la lista para ver los cambios
+}
+    async function borrar(id) {
+        if (!confirm("¿Seguro que quieres eliminar este material de tu biblioteca?")) return;
+        
+        await fetch(`/items/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${TOKEN}` }
+        });
+        cargarLecturas();
+    }
+</script>
+</body>
+</html>

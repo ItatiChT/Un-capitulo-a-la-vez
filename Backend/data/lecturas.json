@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1769495977361,
+    "title": "El concepto de naturaleza",
+    "author": "Whitehead",
+    "status": "read",
+    "relevance": "primer libro del seminario 2023",
+    "notes": "Cap 1, 2, 3 y 4: establece tres tipos de bifurcación de la naturaleza, problema de la materia y del espacio y tiempo, ",
+    "createdAt": "2026-01-27T06:39:37.361Z"
+  },
+  {
+    "id": 1769496415196,
+    "title": "Ciencia y mundo moderno",
+    "author": "Whitehead",
+    "status": "read",
+    "relevance": "explicación mas narrativa/historica del concepto de naturaleza",
+    "notes": "Aparece relación con las abstracciones matemáticas, se define cosmologia. Aparece la falacia de la concreción fuera de lugar",
+    "createdAt": "2026-01-27T06:46:55.196Z"
+  },
+  {
+    "id": 1769496490047,
+    "title": "Modos de pensamiento",
+    "author": "Whitehead",
+    "status": "pending",
+    "relevance": "Aparece como una recapitulación rápida de ideas anteriores, mas explicación del trasfondo. Ideas mas antropologicas",
+    "notes": "",
+    "createdAt": "2026-01-27T06:48:10.047Z"
+  },
+  {
+    "id": 1769496876396,
+    "title": "Proceso y realidad",
+    "author": "whitehead",
+    "status": "pending",
+    "relevance": "super importante, sintesis de todas las ideas. Obra culmine, muy metafisico",
+    "notes": "",
+    "createdAt": "2026-01-27T06:54:36.396Z"
+  },
+  {
+    "id": 1769496993499,
+    "title": "Imagenes operativas",
+    "author": "Parikka",
+    "status": "pending",
+    "relevance": "el profesor Balzi me lo recomendo, tiene un capitulo sobre ruralismo d eplataforma.",
+    "notes": "",
+    "createdAt": "2026-01-27T06:56:33.499Z"
+  }
+]
