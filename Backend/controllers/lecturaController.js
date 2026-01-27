@@ -1,6 +1,6 @@
 /*Importo el modelo lecturaModel, que es el encargado de leer y escribir los datos lecturas.json.
  LLamo y uso el modelo para responder al cliente.*/
-const LecturaModel = require('../models/lecturamodel');
+const LecturaModel = require('../models/lecturaModel');
 
 /*Pide al modelo todas las lectura y las transforma en .json. 
 Se usa cuando se aplica GET, devuelve las lecturas guardadas*/ 
