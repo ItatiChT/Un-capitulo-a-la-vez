@@ -72,3 +72,8 @@ Fecha de creación: Registro automático del momento en que se añadió el mater
 💡 Nota sobre Seguridad
 Todas las rutas bajo el prefijo /items cuentan con un middleware de autenticación. Este verifica que el encabezado de la solicitud contenga un Authorization: Bearer <token>, asegurando que los registros de cada tesista sean privados y personales.
 
+#Demo
+
+https://un-capitulo-a-la-vez-1.onrender.com/
+
+Para poder editar, añadir y eliminar es necesraio que se creen una cuneta nueva. Pero para la demostracion si prefieren pueden ingresa con usuario: usuariodeprueba  contraseña: contraseña123
