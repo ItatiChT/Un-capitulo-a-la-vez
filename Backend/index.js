@@ -1,31 +1,25 @@
 const path = require('path');
-require('dotenv').config(); // Carga las variables del archivo .env 
+require('dotenv').config(); 
 const express = require("express");
 const cors = require("cors");
 
-// Importar las rutas 
 const lecturaRoutes = require('./routes/lecturaRoutes');
 const userRoutes = require('./routes/userRoutes');
 
 const app = express();
-const PORT = process.env.PORT || 3000; 
+// Render usa puertos altos, 
+const PORT = process.env.PORT || 10000; 
 
 app.use(cors()); 
-app.use(express.json()); // Para manejar errores y solicitudes JSON 
-// Carpeta para el frontend opcional 
-// Con esto le decimos la ruta exacta de la carpeta public
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
 
-/* Ruta de prueba
-app.get("/", (req, res) => {
-  res.send("API de 'Un capítulo a la vez' funcionando correctamente ");
-});*/
+// Coreccion de ruta: 
+app.use(express.static(path.join(__dirname, '../public')));
 
-// Usar las rutas con sus prefijos correspondientes 
-app.use('/users', userRoutes); // POST /users/register y POST /users/login 
-app.use('/items', lecturaRoutes); // CRUD de lecturas 
+app.use('/users', userRoutes); 
+app.use('/items', lecturaRoutes); 
 
-// Inicio del servidor 
-app.listen(PORT, () => {
-  console.log(`Servidor escuchando en el puerto ${PORT}`);
+// PARA RENDER:Agregamos '0.0.0.0' para que el servidor sea visible afuera de Render
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Servidor escuchando en el puerto ${PORT}`);
 });
